@@ -63,6 +63,7 @@ class Locator(object) :
     # practice
 
     practice_level_list = "//ul[contains(@class ,'level-list')]/li"
+    practice_level_page = ".level-list"
 
     highest_score = ".hi-score.ng-hide"
     recent_score = ".level-points.small-font.ng-binding.color-easy"
@@ -71,7 +72,7 @@ class Locator(object) :
 
     # practice_question_type
 
-    submit = '.qstn-sub.bbtn.pull-left'
+    submit = '.qstn-sub.bbtn'
     go_prev_question = ".qstn-pager.qstn-prev"
     go_next_question = ".qstn-pager.qstn-nxt"
     intro = ".intro-welcome-overlay.ng-scope"
@@ -90,7 +91,7 @@ class Locator(object) :
     SOR = ".row.qstn-block.type-SOR"
 
     PUZ = ".row.qstn-block.type-PUZ"
-    stick_list = "stick.pic.stick-bck-fill.ng-scope.ui-sortable-handle"
+    stick = ".stick.pic.stick-bck-fill.ng-scope.ui-sortable-handle"
     container = ".drop-container.transition-color.ng-pristine.ng-valid.ui-sortable.pic-drop-container-fill"
 
     MTF = ".row.qstn-block.type-MTF"

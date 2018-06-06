@@ -49,7 +49,7 @@ class Student(CommonFunc):
         student = driver.find_element_by_xpath(Locator.student)
         student.click()
 
-        username = WebDriverWait(driver , 5).until(EC.visibility_of_element_located((By.XPATH , Locator.username)))
+        username = CommonFunc().wait_presence(5 , By.XPATH, Locator.username)
         username.send_keys(TestData.student_username)
 
         password = driver.find_element_by_xpath(Locator.password)
@@ -62,7 +62,8 @@ class Student(CommonFunc):
 
         try:
 
-            learn = WebDriverWait(driver , 10).until(EC.visibility_of_element_located((By.XPATH , Locator.learn)))
+            # learn = WebDriverWait(driver , 10).until(EC.visibility_of_element_located((By.XPATH , Locator.learn)))
+            learn = CommonFunc().wait_visibility(10, By.XPATH , Locator.learn)
 
         except NoSuchElementException:
 
@@ -86,8 +87,7 @@ class Student(CommonFunc):
 
         learn.click()
 
-        confirmation_modal = WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, Locator.confirmation_modal)))
+        confirmation_modal = CommonFunc().wait_visibility(5,By.CSS_SELECTOR, Locator.confirmation_modal)
         
         yes = driver.find_element_by_css_selector(Locator.yes_button)
 
@@ -147,10 +147,7 @@ class Student(CommonFunc):
     def test_05_lesson_selection(self):
         # select lesson
         
-        CommonFunc().select_lesson()
-        pdb.set_trace()
-
-        
+        CommonFunc().select_lesson()     
 
         CommonFunc().resources_testing()
 
