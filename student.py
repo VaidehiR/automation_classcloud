@@ -49,7 +49,7 @@ class Student(CommonFunc):
         student = driver.find_element_by_xpath(Locator.student)
         student.click()
 
-        username = CommonFunc().wait_presence(5 , By.XPATH, Locator.username)
+        username = CommonFunc().wait_presence(5, By.XPATH, Locator.username)
         username.send_keys(TestData.student_username)
 
         password = driver.find_element_by_xpath(Locator.password)
@@ -63,7 +63,7 @@ class Student(CommonFunc):
         try:
 
             # learn = WebDriverWait(driver , 10).until(EC.visibility_of_element_located((By.XPATH , Locator.learn)))
-            learn = CommonFunc().wait_visibility(10, By.XPATH , Locator.learn)
+            learn = CommonFunc().wait_visibility(10, By.XPATH, Locator.learn)
 
         except NoSuchElementException:
 
@@ -87,8 +87,9 @@ class Student(CommonFunc):
 
         learn.click()
 
-        confirmation_modal = CommonFunc().wait_visibility(5,By.CSS_SELECTOR, Locator.confirmation_modal)
-        
+        confirmation_modal = CommonFunc().wait_visibility(
+            5, By.CSS_SELECTOR, Locator.confirmation_modal)
+
         yes = driver.find_element_by_css_selector(Locator.yes_button)
 
         if (confirmation_modal.is_displayed()):
@@ -96,27 +97,27 @@ class Student(CommonFunc):
             yes.click()
 
         else:
-            print('No confirmation modal')           
+            print('No confirmation modal')
 
         try:
 
-            welcome_pop_up = driver.find_elements_by_xpath(Locator.welcome_pop_up)
-            welcome_next_button = driver.find_elements_by_css_selector(Locator.welcome_next_button)
+            welcome_pop_up = driver.find_elements_by_xpath(
+                Locator.welcome_pop_up)
+            welcome_next_button = driver.find_elements_by_css_selector(
+                Locator.welcome_next_button)
 
-            for pop_up, next_button  in zip(welcome_pop_up, welcome_next_button) :                
+            for pop_up, next_button in zip(welcome_pop_up, welcome_next_button):
 
-                    next_button.click()
-                    
-             
-        except ElementNotVisibleException as e :
+                next_button.click()
+
+        except ElementNotVisibleException as e:
 
             print('No Welcome pop up')
 
     def test_04_learn_home_page(self):
 
-        sleep(5)
-        right_header_score = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, Locator.right_header_score)))
+        right_header_score = CommonFunc().wait_visibility(
+            5, By.XPATH, Locator.right_header_score)
 
         print('Initial score of user is : {}'.format(right_header_score.text))
 
@@ -124,10 +125,9 @@ class Student(CommonFunc):
 
         while(course_list):
 
-            course_list = driver.find_elements_by_xpath(Locator.course_list)
+            course_list = driver.find_elements_by_xpath(Locator.course_list)            
 
             for course in course_list:
-                print(course.text)
 
                 if (TestData.course_name_contain in course.text):
 
@@ -142,12 +142,13 @@ class Student(CommonFunc):
             except NoSuchElementException as e:
                 print(e)
 
-                break
+            break
+            
 
     def test_05_lesson_selection(self):
         # select lesson
-        
-        CommonFunc().select_lesson()     
+
+        CommonFunc().select_lesson()
 
         CommonFunc().resources_testing()
 

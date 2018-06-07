@@ -10,15 +10,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from time import sleep
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import random
 
 
-
-
-
 class CommonFunc(CloudSetUp) :
+    def element_xpath(self,locator):
+        return driver.find_element_by_xpath(locator)
+
+    def element_css(self, locator) :
+        return driver.find_element_by_css_selector(locator)
 
     def wait_presence(self, sec , locator, locator_value) :
 
@@ -36,11 +39,19 @@ class CommonFunc(CloudSetUp) :
 
         return WebDriverWait(driver , sec).until(EC.visibility_of_all_elements_located((locator , locator_value)))
 
+    def resource_exist(self, sec , locator, locator_value) :
+
+        try :
+            self.wait_presence(sec , locator, locator_value)
+            return True
+
+        except TimeoutException :
+            return False
 
     def resources_testing(self) :        
 
-        lesson_intro_pop_up = self.wait_presence(2,By.XPATH , Locator.lesson_intro_pop_up)
-        take_ride_button = self.wait_presence(2,By.CSS_SELECTOR, Locator.take_ride_button)
+        lesson_intro_pop_up = self.wait_presence(5,By.XPATH , Locator.lesson_intro_pop_up)
+        take_ride_button = self.wait_presence(5,By.CSS_SELECTOR, Locator.take_ride_button)
         
 
         if (lesson_intro_pop_up.is_displayed()) :
@@ -53,7 +64,7 @@ class CommonFunc(CloudSetUp) :
 
             print('lesson intro not present')
 
-        resources_list = self.wait_visibility_all(5 , By.XPATH, Locator.resources_list)
+        resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)
 
 
         print('number of resources present are : {}' .format(len(resources_list)))
@@ -61,13 +72,13 @@ class CommonFunc(CloudSetUp) :
         # node_active = driver.find_element_by_css_selector(Locator.node_active)
         # node_deactive = driver.find_element_by_css_selector(Locator.node_deactive)
 
-        for resource in resources_list:
-            
+        for resource in resources_list:            
 
-            print(resource)
-            
+            print(resource)  
 
-            if resource == driver.find_element_by_xpath(Locator.video):
+            if self.resource_exist(5, By.XPATH, Locator.video) :                                
+
+            # if resource == driver.find_element_by_xpath(Locator.video):
                 
                 try :
 
@@ -80,13 +91,13 @@ class CommonFunc(CloudSetUp) :
                     
                 score = resource.text
                 print('Score before attempting video node is : {}'.format(score))
-
+                resource == driver.find_element_by_xpath(Locator.video_deactive)
                 resource.click()
 
                 resources_list = self.wait_visibility_all(200, By.XPATH, Locator.resources_list)
                 
 
-            elif resource == driver.find_element_by_xpath(Locator.practice):
+            elif self.resource_exist(5, By.XPATH, Locator.practice):
                 
                 try :
                     resource == driver.find_element_by_xpath(Locator.practice_deactive)
@@ -100,15 +111,34 @@ class CommonFunc(CloudSetUp) :
                 score = resource.text
                 print('Score before attempting practice node is : {}'.format(score)) 
 
-                sleep(2) 
+                resource = self.wait_visibility(5 , By.XPATH, Locator.practice)
 
                 act = ActionChains(driver)
-                act.move_to_element(resource).double_click().perform()                    
+                act.move_to_element(resource).perform()   
+                resource.click()                 
 
                 
                 print('check resource.click has clicked on resource')
 
-                self.practice_level_score()             
+                self.practice_level_score()                
+                start_button = self.wait_visibility(5, By.CSS_SELECTOR, Locator.start_button)
+                start_button.click()
+                self.questions_testing()
+                self.practice_level_score()
+
+            elif self.resource_exist(5, By.XPATH, Locator.node) :
+                
+                print('pdf present')
+
+                # import PyPDF2 
+                # pdf_file = open('8_7W91OQ.pdf', 'rb') 
+                # read_pdf = PyPDF2.PdfFileReader(pdf_file) 
+                # number_of_pages = read_pdf.getNumPages() 
+                # page = read_pdf.getPage(0) 
+                # page_content = page.extractText() 
+                # print (page_content.encode('utf-8'))
+
+        
 
                 
 
@@ -129,19 +159,16 @@ class CommonFunc(CloudSetUp) :
             print("latest_score_before_practice : {}".format(
                 latest_score_before_practice))
 
-            start_button = self.wait_visibility(5, By.CSS_SELECTOR, Locator.start_button)
-            start_button.click()
-            self.questions_testing()
-
-
+            
+            
     def select_lesson(self) :
   
-
-        lesson_list = self.wait_presence_all(5, By.CSS_SELECTOR , Locator.lesson_list)
+        lesson_list = self.wait_presence_all(10, By.CSS_SELECTOR , Locator.lesson_list)
         start_list = self.wait_presence_all(5, By.CSS_SELECTOR , Locator.start_lesson)
 
 
         for lesson in lesson_list :
+            print(lesson)
                
             if(TestData.lesson_name_contain in lesson.text) :
 
@@ -157,18 +184,19 @@ class CommonFunc(CloudSetUp) :
                 print('lesson not found')
 
     def questions_testing(self) :
-        
+
+        pdb.set_trace()        
 
         submit = self.wait_presence(10,By.CSS_SELECTOR, Locator.submit)
         go_prev_question = driver.find_element_by_css_selector(Locator.go_prev_question)
         go_next_question = driver.find_element_by_css_selector(Locator.go_next_question) 
-        intro = driver.find_element_by_css_selector(Locator.intro)    
-
+        intro = self.wait_presence(5 , By.CSS_SELECTOR ,Locator.intro)
+        print(self.resource_exist(5, By.CSS_SELECTOR, Locator.go_next_question))
 
         # practice_level_page = driver.find_element_by_css_selector(Locator.practice_level_page)
         # practice_level_page = False
      
-        while(go_next_question.is_displayed()) :            
+        while(self.resource_exist(5, By.CSS_SELECTOR, Locator.go_next_question)) :       
 
             if  driver.find_elements_by_css_selector(Locator.SCQ) :
                 
@@ -181,7 +209,6 @@ class CommonFunc(CloudSetUp) :
                 act = ActionChains(driver)
                 act.move_to_element(submit).perform()
                 submit.click()
-                sleep(2)
                 go_next_question.click()
 
             elif driver.find_elements_by_css_selector(Locator.DR): 
@@ -191,10 +218,11 @@ class CommonFunc(CloudSetUp) :
                 submit = self.wait_presence(5 , By.CSS_SELECTOR, Locator.submit)
                 submit.click()
                 go_next_question.click()
+                pdb.set_trace()
+
 
             elif driver.find_elements_by_css_selector(Locator.PUZ):
 
-                intro = self.wait_presence(5 , By.CSS_SELECTOR ,Locator.intro)
                 intro.click()
 
                 stick_list = driver.find_elements_by_css_selector(Locator.stick)
@@ -214,20 +242,26 @@ class CommonFunc(CloudSetUp) :
                     
 
                 submit = driver.find_element_by_css_selector(Locator.submit)
+                
                 submit.click()
                 go_next_question.click()
 
+
+
             elif driver.find_elements_by_css_selector(Locator.SST) :
 
-                intro = self.wait_presence(5 , By.CSS_SELECTOR ,Locator.intro)
                 intro.click()
 
                 submit = driver.find_element_by_css_selector(Locator.submit)
                 submit.click()
                 go_next_question.click()
 
-        pdb.set_trace()
-        self.practice_level_score()
+            elif driver.find_elements_by_css_selector(Locator.MTF) :
+
+                intro.click()
+                go_next_question.click()
+
+
 
 
 

@@ -53,8 +53,8 @@ class Locator(object) :
 
     video = "//div[contains(@class , 'video')]"
     video_deactive = "//div[contains(@class , 'video-deactive')]"
-    node_active = ".node.transition-bounce.ng-scope.node-active.pdf-active"
-    node_deactive = ".node.transition-bounce.ng-scope.node-deactive.pdf-deactive"
+    node = "//div[contains(@class , 'node')]" 
+    node_deactive = "//div[contains(@class , 'node-deactive')]"
     practice = "//div[contains(@class , 'practice')]"
     practice_deactive = "//div[contains(@class , 'practice-deactive')]"
     quiz_active = ".node.transition-bounce.ng-scope.quiz-active.node-active"
