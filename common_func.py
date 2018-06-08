@@ -39,16 +39,71 @@ class CommonFunc(CloudSetUp) :
 
         return WebDriverWait(driver , sec).until(EC.visibility_of_all_elements_located((locator , locator_value)))
 
-    def resource_exist(self, sec , locator, locator_value) :
 
+    def select_course(self) :
+
+        course_list = driver.find_elements_by_xpath(Locator.course_list)
+
+        while(course_list):
+
+            course_list = driver.find_elements_by_xpath(Locator.course_list)                       
+
+            for course in course_list:
+                print(course.text)
+            
+                if (TestData.course_name_contain in course.text):
+                    course.click()
+                    break
+            try:
+
+                next_button = driver.find_element_by_xpath(Locator.next_button)
+                next_button.click()
+
+            except NoSuchElementException as e:
+                print(e)
+
+
+    def select_lesson(self) :
+
+        lesson_list = self.wait_presence_all(10, By.CSS_SELECTOR , Locator.lesson_list)
+        start_list = self.wait_presence_all(5, By.CSS_SELECTOR , Locator.start_lesson)
+
+
+        for lesson in lesson_list :
+            print(lesson)
+               
+            if(TestData.lesson_name_contain in lesson.text) :
+
+                lesson.click()
+
+                for start in start_list :
+                    if start.is_displayed() :
+                        start.click()
+                        break
+                break
+            
+            else :
+                print('lesson not found')
+
+
+    def resource_exist(self, locator) :
+        
+        try :
+            return driver.find_element_by_xpath(locator)
+            
+        except :
+            return False
+
+    def element_exist(self, sec , locator, locator_value) :
+        
         try :
             self.wait_presence(sec , locator, locator_value)
             return True
 
-        except TimeoutException :
+        except :
             return False
 
-    def resources_testing(self) :        
+    def lesson_intro_popUp(self) :        
 
         lesson_intro_pop_up = self.wait_presence(5,By.XPATH , Locator.lesson_intro_pop_up)
         take_ride_button = self.wait_presence(5,By.CSS_SELECTOR, Locator.take_ride_button)
@@ -64,19 +119,30 @@ class CommonFunc(CloudSetUp) :
 
             print('lesson intro not present')
 
-        resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)
+    def resource_presence(self) :
+
+        self.lesson_intro_popUp()
+
+        try :
+
+            resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)
+            print('number of resources present are : {}' .format(len(resources_list)))
+            return resources_list
+
+        except :
+            print('no resource present')
 
 
-        print('number of resources present are : {}' .format(len(resources_list)))
+    def resources_testing(self) :  
 
-        # node_active = driver.find_element_by_css_selector(Locator.node_active)
-        # node_deactive = driver.find_element_by_css_selector(Locator.node_deactive)
+        self.resource_presence()
+        pdb.set_trace()
+
+        resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)        
 
         for resource in resources_list:            
 
-            print(resource)  
-
-            if self.resource_exist(5, By.XPATH, Locator.video) :                                
+            if resource == self.resource_exist(Locator.video) :                                
 
             # if resource == driver.find_element_by_xpath(Locator.video):
                 
@@ -91,13 +157,14 @@ class CommonFunc(CloudSetUp) :
                     
                 score = resource.text
                 print('Score before attempting video node is : {}'.format(score))
-                resource == driver.find_element_by_xpath(Locator.video_deactive)
+                resource == driver.find_element_by_xpath(Locator.video)
                 resource.click()
 
                 resources_list = self.wait_visibility_all(200, By.XPATH, Locator.resources_list)
                 
+                
 
-            elif self.resource_exist(5, By.XPATH, Locator.practice):
+            elif resource == self.resource_exist(Locator.practice):
                 
                 try :
                     resource == driver.find_element_by_xpath(Locator.practice_deactive)
@@ -111,7 +178,7 @@ class CommonFunc(CloudSetUp) :
                 score = resource.text
                 print('Score before attempting practice node is : {}'.format(score)) 
 
-                resource = self.wait_visibility(5 , By.XPATH, Locator.practice)
+                resource = WebDriverWait(driver , 5).until(EC.element_to_be_clickable((By.XPATH, Locator.practice)))
 
                 act = ActionChains(driver)
                 act.move_to_element(resource).perform()   
@@ -126,7 +193,7 @@ class CommonFunc(CloudSetUp) :
                 self.questions_testing()
                 self.practice_level_score()
 
-            elif self.resource_exist(5, By.XPATH, Locator.node) :
+            elif resource == self.resource_exist(Locator.node) :
                 
                 print('pdf present')
 
@@ -149,54 +216,40 @@ class CommonFunc(CloudSetUp) :
 
         for level in practice_level_list:
 
-            highest_score_before_practice = driver.find_element_by_css_selector(
-                Locator.highest_score).text
-            latest_score_before_practice = driver.find_element_by_css_selector(
-                Locator.highest_score).text
+            highest_score_before_practice = driver.find_element_by_css_selector(Locator.highest_score).text
+            recent_score_before_practice = driver.find_element_by_css_selector(Locator.recent_score).text
 
             print("highest_score_before_practice : {}".format(
                 highest_score_before_practice))
             print("latest_score_before_practice : {}".format(
-                latest_score_before_practice))
+                recent_score_before_practice))
 
             
             
-    def select_lesson(self) :
-  
-        lesson_list = self.wait_presence_all(10, By.CSS_SELECTOR , Locator.lesson_list)
-        start_list = self.wait_presence_all(5, By.CSS_SELECTOR , Locator.start_lesson)
+    
 
-
-        for lesson in lesson_list :
-            print(lesson)
-               
-            if(TestData.lesson_name_contain in lesson.text) :
-
-                lesson.click()
-
-                for start in start_list :
-                    if start.is_displayed() :
-                        start.click()
-                        break
-                break
+    def check_submit_enability_and_click(self) :
+        try :
             
-            else :
-                print('lesson not found')
+            submit = WebDriverWait(driver , 4).until(EC.element_to_be_clickable((By.CSS_SELECTOR, Locator.submit)))
+            submit.click()
+            go_next_question = driver.find_element_by_css_selector(Locator.go_next_question) 
+            go_next_question.click()
 
-    def questions_testing(self) :
+        except :
+            print('submit button is not enabled')
 
-        pdb.set_trace()        
+    def questions_testing(self) :      
 
         submit = self.wait_presence(10,By.CSS_SELECTOR, Locator.submit)
         go_prev_question = driver.find_element_by_css_selector(Locator.go_prev_question)
         go_next_question = driver.find_element_by_css_selector(Locator.go_next_question) 
         intro = self.wait_presence(5 , By.CSS_SELECTOR ,Locator.intro)
-        print(self.resource_exist(5, By.CSS_SELECTOR, Locator.go_next_question))
 
         # practice_level_page = driver.find_element_by_css_selector(Locator.practice_level_page)
         # practice_level_page = False
      
-        while(self.resource_exist(5, By.CSS_SELECTOR, Locator.go_next_question)) :       
+        while(self.element_exist(5, By.CSS_SELECTOR, Locator.go_next_question)) :       
 
             if  driver.find_elements_by_css_selector(Locator.SCQ) :
                 
@@ -208,19 +261,15 @@ class CommonFunc(CloudSetUp) :
                 submit = self.wait_presence(10,By.CSS_SELECTOR, Locator.submit)
                 act = ActionChains(driver)
                 act.move_to_element(submit).perform()
-                submit.click()
-                go_next_question.click()
+                self.check_submit_enability_and_click()
+                pdb.set_trace()
 
             elif driver.find_elements_by_css_selector(Locator.DR): 
 
                 input_field = driver.find_element_by_name(Locator.input_field)
                 input_field.send_keys("text")
-                submit = self.wait_presence(5 , By.CSS_SELECTOR, Locator.submit)
-                submit.click()
-                go_next_question.click()
-                pdb.set_trace()
-
-
+                self.check_submit_enability_and_click()
+                
             elif driver.find_elements_by_css_selector(Locator.PUZ):
 
                 intro.click()

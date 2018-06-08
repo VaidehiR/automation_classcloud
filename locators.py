@@ -19,10 +19,13 @@ class Locator(object) :
     username = "//input[@name='username']"
     password = "//input[@name ='password']"
     login = "login-sub"
-
+    invalid_login_meg = ".alert.ng-isolate-scope.alert-danger > div > span"
+    
     # landing page
     confirmation_modal = '.intro-welcome-overlay'
+    confirmation_modal_title = "body > div.ng-scope > div.container-fluid.zhead.courseslist-con.ng-scope > div.intro-welcome-overlay > div:nth-child(1) > div > p > span"
     yes_button = ".btn.btn-success.btn-large.large-font"
+    no_button = ".btn.btn-danger.btn-large.large-font"
 
     learn = "/html/body/div[3]/div/div/div[2]/div[1]/div[1]/a"
     quiz = "/html/body/div[3]/div/div/div[2]/div[1]/div[2]/a"
@@ -65,7 +68,7 @@ class Locator(object) :
     practice_level_list = "//ul[contains(@class ,'level-list')]/li"
     practice_level_page = ".level-list"
 
-    highest_score = ".hi-score.ng-hide"
+    highest_score = "body > div.ng-scope > div > div > div > div:nth-child(2) > ul > li.ng-scope.level-easy > div.hi-score > strong"
     recent_score = ".level-points.small-font.ng-binding.color-easy"
 
     start_button = ".level-cta-btn.ng-binding.btn-easy.btn-easy-img.level-btn-txt"

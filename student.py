@@ -45,7 +45,7 @@ class Student(CommonFunc):
     def test_02_login(self):
         # select student  and login
         sleep(3)
-
+        
         student = driver.find_element_by_xpath(Locator.student)
         student.click()
 
@@ -58,49 +58,64 @@ class Student(CommonFunc):
         login = driver.find_element_by_id(Locator.login)
         login.click()
 
+        current_url = driver.current_url
+
+        self.assertEqual(TestData.expected_url , current_url)
+
+
     def test_03_landing_page(self):
 
         try:
-
-            # learn = WebDriverWait(driver , 10).until(EC.visibility_of_element_located((By.XPATH , Locator.learn)))
             learn = CommonFunc().wait_visibility(10, By.XPATH, Locator.learn)
 
         except NoSuchElementException:
-
             print('Learn not present')
 
         try:
-
             quiz = driver.find_element_by_xpath(Locator.quiz)
 
         except NoSuchElementException:
-
             print('quiz not present')
 
         try:
-
             logout = driver.find_element_by_xpath(Locator.logout)
 
         except NoSuchElementException:
-
             print('logout not present')
 
         learn.click()
 
+
+    def test_04_confirmation_popup_in_Learn(self) :        
+
         confirmation_modal = CommonFunc().wait_visibility(
             5, By.CSS_SELECTOR, Locator.confirmation_modal)
-
-        yes = driver.find_element_by_css_selector(Locator.yes_button)
+        confirmation_modal_title = driver.find_element_by_css_selector(Locator.confirmation_modal_title)   
+        pdb.set_trace()     
 
         if (confirmation_modal.is_displayed()):
-            sleep(3)
-            yes.click()
+
+            try:
+
+                self.assertIn(confirmation_modal_title.text.upper(), TestData.student_username.upper())
+                yes = driver.find_element_by_css_selector(Locator.yes_button)
+                yes.click()
+
+            except:
+
+                no = driver.find_element_by_css_selector(Locator.no_button)
+                no.click()
+                sleep(1)
+                self.assertEqual(TestData.expected_url , driver.current_url)
+                print('Login not confirmed')
 
         else:
             print('No confirmation modal')
 
-        try:
 
+    def test_05_welcome_popup(self) :
+
+        try:
             welcome_pop_up = driver.find_elements_by_xpath(
                 Locator.welcome_pop_up)
             welcome_next_button = driver.find_elements_by_css_selector(
@@ -114,39 +129,22 @@ class Student(CommonFunc):
 
             print('No Welcome pop up')
 
-    def test_04_learn_home_page(self):
+
+    def test_06_check_initial_score_home_page(self):
 
         right_header_score = CommonFunc().wait_visibility(
-            5, By.XPATH, Locator.right_header_score)
+            5, By.XPATH, Locator.right_header_score)        
 
-        print('Initial score of user is : {}'.format(right_header_score.text))
+        if initial_score >= 100 :
+            initial_score = right_header_score.text
 
-        course_list = driver.find_elements_by_xpath(Locator.course_list)
+        else :
+            print('initial score is wrong')
 
-        while(course_list):
 
-            course_list = driver.find_elements_by_xpath(Locator.course_list)            
-
-            for course in course_list:
-
-                if (TestData.course_name_contain in course.text):
-
-                    course.click()
-                    break
-
-            try:
-
-                next_button = driver.find_element_by_xpath(Locator.next_button)
-                next_button.click()
-
-            except NoSuchElementException as e:
-                print(e)
-
-            break
-            
-
-    def test_05_lesson_selection(self):
-        # select lesson
+    def test_07_(self):
+        
+        CommonFunc().select_course()
 
         CommonFunc().select_lesson()
 
