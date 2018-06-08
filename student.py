@@ -90,8 +90,7 @@ class Student(CommonFunc):
 
         confirmation_modal = CommonFunc().wait_visibility(
             5, By.CSS_SELECTOR, Locator.confirmation_modal)
-        confirmation_modal_title = driver.find_element_by_css_selector(Locator.confirmation_modal_title)   
-        pdb.set_trace()     
+        confirmation_modal_title = driver.find_element_by_css_selector(Locator.confirmation_modal_title)          
 
         if (confirmation_modal.is_displayed()):
 
@@ -99,6 +98,7 @@ class Student(CommonFunc):
 
                 self.assertIn(confirmation_modal_title.text.upper(), TestData.student_username.upper())
                 yes = driver.find_element_by_css_selector(Locator.yes_button)
+                sleep(1)
                 yes.click()
 
             except:
@@ -135,7 +135,7 @@ class Student(CommonFunc):
         right_header_score = CommonFunc().wait_visibility(
             5, By.XPATH, Locator.right_header_score)        
 
-        if initial_score >= 100 :
+        if right_header_score.text >= '100' :
             initial_score = right_header_score.text
 
         else :
@@ -143,7 +143,7 @@ class Student(CommonFunc):
 
 
     def test_07_(self):
-        
+
         CommonFunc().select_course()
 
         CommonFunc().select_lesson()

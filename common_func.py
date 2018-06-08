@@ -136,7 +136,6 @@ class CommonFunc(CloudSetUp) :
     def resources_testing(self) :  
 
         self.resource_presence()
-        pdb.set_trace()
 
         resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)        
 
