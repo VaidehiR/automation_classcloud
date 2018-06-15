@@ -50,7 +50,6 @@ class CommonFunc(CloudSetUp) :
             course_list = driver.find_elements_by_xpath(Locator.course_list)                       
 
             for course in course_list:
-                print(course.text)
             
                 if (TestData.course_name_contain in course.text):
                     course.click()
@@ -200,8 +199,6 @@ class CommonFunc(CloudSetUp) :
 
                     start_button = self.wait_visibility(5, By.CSS_SELECTOR, Locator.start_button)
                     start_button.click()
-
-                    pdb.set_trace()
 
                     self.questions_testing()
 
