@@ -45,7 +45,7 @@ class Student(CommonFunc):
     def test_02_login(self):
         # select student  and login
         sleep(3)
-        
+
         student = driver.find_element_by_xpath(Locator.student)
         student.click()
 
@@ -60,8 +60,7 @@ class Student(CommonFunc):
 
         current_url = driver.current_url
 
-        self.assertEqual(TestData.expected_url , current_url)
-
+        self.assertEqual(TestData.expected_url, current_url)
 
     def test_03_landing_page(self):
 
@@ -85,18 +84,19 @@ class Student(CommonFunc):
 
         learn.click()
 
-
-    def test_04_confirmation_popup_in_Learn(self) :        
+    def test_04_confirmation_popup_in_Learn(self):
 
         confirmation_modal = CommonFunc().wait_visibility(
             5, By.CSS_SELECTOR, Locator.confirmation_modal)
-        confirmation_modal_title = driver.find_element_by_css_selector(Locator.confirmation_modal_title)          
+        confirmation_modal_title = driver.find_element_by_css_selector(
+            Locator.confirmation_modal_title)
 
         if (confirmation_modal.is_displayed()):
 
             try:
 
-                self.assertIn(confirmation_modal_title.text.upper(), TestData.student_username.upper())
+                self.assertIn(confirmation_modal_title.text.upper(),
+                              TestData.student_username.upper())
                 yes = driver.find_element_by_css_selector(Locator.yes_button)
                 sleep(1)
                 yes.click()
@@ -106,14 +106,13 @@ class Student(CommonFunc):
                 no = driver.find_element_by_css_selector(Locator.no_button)
                 no.click()
                 sleep(1)
-                self.assertEqual(TestData.expected_url , driver.current_url)
+                self.assertEqual(TestData.expected_url, driver.current_url)
                 print('Login not confirmed')
 
         else:
             print('No confirmation modal')
 
-
-    def test_05_welcome_popup(self) :
+    def test_05_welcome_popup(self):
 
         try:
             welcome_pop_up = driver.find_elements_by_xpath(
@@ -129,16 +128,15 @@ class Student(CommonFunc):
 
             print('No Welcome pop up')
 
-
     def test_06_check_initial_score_home_page(self):
 
         right_header_score = CommonFunc().wait_visibility(
-            5, By.XPATH, Locator.right_header_score)        
+            5, By.XPATH, Locator.right_header_score)
 
-        if right_header_score.text >= '100' :
+        if right_header_score.text >= '100':
             initial_score = right_header_score.text
 
-        else :
+        else:
             print('initial score is wrong')
 
     def test_07_check_profile_page_navigation(self):
@@ -148,41 +146,48 @@ class Student(CommonFunc):
 
         self.assertEqual(Locator.profile_navigation_url, driver.current_url)
 
-        try :
+        try:
 
-            recent_activity_list = driver.find_element_by_css_selector(Locator.recent_activity_list)
+            recent_activity_list = driver.find_element_by_css_selector(
+                Locator.recent_activity_list)
 
-        except :
+        except:
 
             print('No recent activity')
 
-        profile_page_back = driver.find_element_by_id(Locator.profile_page_back)
-        profile_page_back.click()
+       
 
-    def test_08_check_badge_sidebar_navigation(self) :
 
-        badge = driver.find_element_by_id(Locator.badge)
+    def test_08_check_badge_sidebar_navigation(self):
+        sleep(2)
+
+        badge = CommonFunc().wait_presence(10, By.ID, Locator.badge)
         badge.click()
 
         try:
-            badge_sidebar = driver.find_element_by_css_selector(Locator.badge_sidebar)
+            badge_sidebar = driver.find_element_by_css_selector(
+                Locator.badge_sidebar)
             badge_sidebar.is_displayed()
 
         except :
-
             print('badge sidebar is not active')
-
         badge.click()
 
+        sleep(2)
+
+        profile_page_back = CommonFunc().wait_visibility(10, By.ID, Locator.profile_page_back)     
+        
+        profile_page_back.click()
 
 
-    # def test_07_(self):
 
-    #     CommonFunc().select_course()
+    def test_09_(self):
 
-    #     CommonFunc().select_lesson()
+        CommonFunc().select_course()
 
-    #     CommonFunc().resources_testing()
+        CommonFunc().select_lesson()
+
+        CommonFunc().resources_testing()
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ class CommonFunc(CloudSetUp) :
 
     def select_course(self) :
 
-        course_list = driver.find_elements_by_xpath(Locator.course_list)
+        course_list = self.wait_presence_all(5, By.XPATH, Locator.course_list)
 
         while(course_list):
 
