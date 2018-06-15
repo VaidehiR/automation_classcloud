@@ -141,14 +141,48 @@ class Student(CommonFunc):
         else :
             print('initial score is wrong')
 
+    def test_07_check_profile_page_navigation(self):
 
-    def test_07_(self):
+        profile = driver.find_element_by_css_selector(Locator.profile)
+        profile.click()
 
-        CommonFunc().select_course()
+        self.assertEqual(Locator.profile_navigation_url, driver.current_url)
 
-        CommonFunc().select_lesson()
+        try :
 
-        CommonFunc().resources_testing()
+            recent_activity_list = driver.find_element_by_css_selector(Locator.recent_activity_list)
+
+        except :
+
+            print('No recent activity')
+
+        profile_page_back = driver.find_element_by_id(Locator.profile_page_back)
+        profile_page_back.click()
+
+    def test_08_check_badge_sidebar_navigation(self) :
+
+        badge = driver.find_element_by_id(Locator.badge)
+        badge.click()
+
+        try:
+            badge_sidebar = driver.find_element_by_css_selector(Locator.badge_sidebar)
+            badge_sidebar.is_displayed()
+
+        except :
+
+            print('badge sidebar is not active')
+
+        badge.click()
+
+
+
+    # def test_07_(self):
+
+    #     CommonFunc().select_course()
+
+    #     CommonFunc().select_lesson()
+
+    #     CommonFunc().resources_testing()
 
 
 if __name__ == "__main__":

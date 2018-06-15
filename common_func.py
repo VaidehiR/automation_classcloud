@@ -14,6 +14,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import random
+from fractions import Fraction
 
 
 class CommonFunc(CloudSetUp) :
@@ -136,14 +137,13 @@ class CommonFunc(CloudSetUp) :
     def resources_testing(self) :  
 
         self.resource_presence()
-
+        
+        right_header_score = self.wait_visibility(5, By.XPATH, Locator.right_header_score)   
         resources_list = self.wait_visibility_all(10 , By.XPATH, Locator.resources_list)        
 
         for resource in resources_list:            
 
             if resource == self.resource_exist(Locator.video) :                                
-
-            # if resource == driver.find_element_by_xpath(Locator.video):
                 
                 try :
 
@@ -160,8 +160,13 @@ class CommonFunc(CloudSetUp) :
                 resource.click()
 
                 resources_list = self.wait_visibility_all(200, By.XPATH, Locator.resources_list)
+                if score == '50' :
+                    new_score = int(right_header_score.text) + 0
+                    self.assertEqual(int(right_header_score.text) , new_score)
                 
-                
+                else :
+                    new_score = int(right_header_score.text) + 50
+                    self.assertEqual(int(right_header_score.text) , new_score)
 
             elif resource == self.resource_exist(Locator.practice):
                 
@@ -169,28 +174,45 @@ class CommonFunc(CloudSetUp) :
                     resource == driver.find_element_by_xpath(Locator.practice_deactive)
                     resource.click()
                     print('Practice node is active now')
+                    print('check resource.click has clicked on resource')
 
                 except:
 
                     print('Practice node is active')
 
                 score = resource.text
+                right_header_score = right_header_score.text
                 print('Score before attempting practice node is : {}'.format(score)) 
 
                 resource = WebDriverWait(driver , 5).until(EC.element_to_be_clickable((By.XPATH, Locator.practice)))
-
-                act = ActionChains(driver)
-                act.move_to_element(resource).perform()   
-                resource.click()                 
-
-                
+                sleep(2)
+                resource.click()          
                 print('check resource.click has clicked on resource')
 
-                self.practice_level_score()                
-                start_button = self.wait_visibility(5, By.CSS_SELECTOR, Locator.start_button)
-                start_button.click()
-                self.questions_testing()
-                self.practice_level_score()
+                practice_level_list = self.wait_visibility_all(10, By.XPATH, Locator.practice_level_list)     
+
+                for level in practice_level_list:
+
+                    highest_score_before_practice = driver.find_element_by_css_selector(Locator.highest_score).text
+                    recent_score_before_practice = driver.find_element_by_css_selector(Locator.recent_score).text
+                    right_header_score = self.wait_visibility(5, By.XPATH, Locator.right_header_score)
+                    total_score = right_header_score.text
+
+                    start_button = self.wait_visibility(5, By.CSS_SELECTOR, Locator.start_button)
+                    start_button.click()
+
+                    pdb.set_trace()
+
+                    self.questions_testing()
+
+                    highest_score_after_practice = driver.find_element_by_css_selector(Locator.highest_score).text
+                    recent_score_after_practice = driver.find_element_by_css_selector(Locator.recent_score).text 
+                    recent_score = Fraction(recent_score_after_practice).numerator
+
+                    new_score = int(total_score) + recent_score
+                    right_header_score = self.wait_visibility(5, By.XPATH, Locator.right_header_score) 
+                    self.assertEqual(int(right_header_score.text) , new_score)
+
 
             elif resource == self.resource_exist(Locator.node) :
                 
@@ -202,31 +224,43 @@ class CommonFunc(CloudSetUp) :
                 # number_of_pages = read_pdf.getNumPages() 
                 # page = read_pdf.getPage(0) 
                 # page_content = page.extractText() 
-                # print (page_content.encode('utf-8'))
+                # print (page_content.encode('utf-8'))  
 
-        
+            elif resource == self.resource_exist(Locator.game) : 
 
+                try :
+
+                    resource == driver.find_element_by_xpath(Locator.game_deactive)
+                    resource.click()
+                    print('game node is active')
+
+                except:
+                    print('game node is active')
+                    
+                score = resource.text
+                print('Score before attempting game node is : {}'.format(score))
+                resource == driver.find_element_by_xpath(Locator.game)
+                resource.click()
+
+                score = resource.text
+                print('Score before attempting game node is : {}'.format(score))
+                resource == driver.find_element_by_xpath(Locator.game)
+                resource.click()
+
+                game_close = driver.find_element_by_css_selector(Locator.game_close)
+                game_close.click()
+
+                if score == '50' :
+                    new_score = int(right_header_score.text) + 0
+                    self.assertEqual(int(right_header_score.text) , new_score)
                 
+                else :
+                    new_score = int(right_header_score.text) + 50
+                    self.assertEqual(int(right_header_score.text) , new_score)
 
-    def practice_level_score(self) :
-
-        practice_level_list = self.wait_visibility_all(10, By.XPATH, Locator.practice_level_list)                
 
 
-        for level in practice_level_list:
-
-            highest_score_before_practice = driver.find_element_by_css_selector(Locator.highest_score).text
-            recent_score_before_practice = driver.find_element_by_css_selector(Locator.recent_score).text
-
-            print("highest_score_before_practice : {}".format(
-                highest_score_before_practice))
-            print("latest_score_before_practice : {}".format(
-                recent_score_before_practice))
-
-            
-            
-    
-
+              
     def check_submit_enability_and_click(self) :
         try :
             
@@ -248,7 +282,8 @@ class CommonFunc(CloudSetUp) :
         # practice_level_page = driver.find_element_by_css_selector(Locator.practice_level_page)
         # practice_level_page = False
      
-        while(self.element_exist(5, By.CSS_SELECTOR, Locator.go_next_question)) :       
+        while(self.element_exist(5, By.CSS_SELECTOR, Locator.go_next_question)) :
+
 
             if  driver.find_elements_by_css_selector(Locator.SCQ) :
                 
@@ -261,7 +296,7 @@ class CommonFunc(CloudSetUp) :
                 act = ActionChains(driver)
                 act.move_to_element(submit).perform()
                 self.check_submit_enability_and_click()
-                pdb.set_trace()
+            
 
             elif driver.find_elements_by_css_selector(Locator.DR): 
 
@@ -293,8 +328,6 @@ class CommonFunc(CloudSetUp) :
                 
                 submit.click()
                 go_next_question.click()
-
-
 
             elif driver.find_elements_by_css_selector(Locator.SST) :
 

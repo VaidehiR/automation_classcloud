@@ -15,13 +15,13 @@ class Locator(object) :
     student = "/html/body/div[3]/div/div/div[2]/div[1]"
 
     # login
-
     username = "//input[@name='username']"
     password = "//input[@name ='password']"
     login = "login-sub"
     invalid_login_meg = ".alert.ng-isolate-scope.alert-danger > div > span"
     
     # landing page
+
     confirmation_modal = '.intro-welcome-overlay'
     confirmation_modal_title = "body > div.ng-scope > div.container-fluid.zhead.courseslist-con.ng-scope > div.intro-welcome-overlay > div:nth-child(1) > div > p > span"
     yes_button = ".btn.btn-success.btn-large.large-font"
@@ -37,9 +37,20 @@ class Locator(object) :
     welcome_pop_up = "//div[contains(@class , 'welcome-screen-zaya')]"
     welcome_next_button = ".btn.btn-info.btn-block"
 
-    # learn 
+    # header section
 
-    right_header_score = "/html/body/div[3]/div[1]/div[1]/div[3]/span"
+    right_header_score = "//div[contains(@class , 'header-right-section')]/span"
+
+    profile = "#student_profile > span"
+    profile_navigation_url = "http://staging.zaya.in/learn/#/profile/"
+    profile_page_back = "student_back"
+    recent_activity_list = ".list-unstyled point-list > li"
+
+    badge = "student_badge"
+    badge_sidebar = ".badge-notification.pointer.badge-notification-active"
+
+    # learn   
+
     course_list = "/html/body/div[3]/div[2]/div[2]/div/ul/li"
     lesson = "lesson-3"
     lesson_list = ".lessons-list.list-unstyled > div > li"
@@ -62,6 +73,10 @@ class Locator(object) :
     practice_deactive = "//div[contains(@class , 'practice-deactive')]"
     quiz_active = ".node.transition-bounce.ng-scope.quiz-active.node-active"
     quiz_deactive = ".node.transition-bounce.ng-scope.quiz-deactive.node-deactive"
+    game = "//div[contains(@class , 'game')]"
+    game_deactive = "//div[contains(@class , 'game-deactive')]"
+    game_close = ".pointer"
+    score_on_resource = "//*[@id='student_resourse']/div[1]/div"
 
     # practice
 
